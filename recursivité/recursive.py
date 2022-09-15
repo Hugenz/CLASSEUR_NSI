@@ -6,7 +6,6 @@ def factorielle(n):
 print(factorielle(7))
 
 
-
 def fact(n):
     if n!=0:
         return n*fact(n-1)
