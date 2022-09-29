@@ -1,4 +1,4 @@
-# Exercice : écrire une fonction python fusion(L1,L2) qui prend en argument deux listes triées L1 et L2
+# Sujet Exercice : écrire une fonction python fusion(L1,L2) qui prend en argument deux listes triées L1 et L2
 # et qui retourne une liste triée L3 qui est la fusion de L1 et L2
 
 # Par exemple :

@@ -28,3 +28,5 @@ def somme_max(T,i,j):
 
 tableau=[[4,1,1,3],[2,0,2,1],[3,1,5,1]]
 print(somme_max(tableau,2,3))
+
+
