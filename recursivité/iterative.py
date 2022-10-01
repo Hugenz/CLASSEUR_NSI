@@ -8,6 +8,7 @@ def fact_iteration(n):
 
 print (fact_iteration(5))
 
+
 def fact_iter(n):
     if n <= 1:
         return 1
@@ -17,3 +18,4 @@ def fact_iter(n):
     return result
 
 print (fact_iter(5))
+

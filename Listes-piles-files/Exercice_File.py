@@ -5,10 +5,11 @@
 # sinon on depile la premiere pile et on empile les elements sur la deuxieme pile
 
 
-# liste des fonctions utiles
-
 def creer_pile_vide():
     return []
+
+def creer_file_vide():
+    return [creer_pile_vide(),creer_pile_vide()]
 
 def est_vide(P):
     if P==[]:
@@ -20,24 +21,28 @@ def empiler(P,e):
     P.append(e)
     return None
 
+def enfiler(F,e):
+    return empiler(F[0],e)
+
 def depiler(P):
     e=P.pop()
     return e
 
-def main(p1,p2):
-
-    for i in range(len(p1)):
-        empiler(p1,i)
-    while not est_vide(p2):
-        for i in range(len(p2)):
-            empiler(p1,depiler(p2))
-    else:
-        for i in range(len(p1)):
-            empiler(p2,depiler(p1))
-    return p1,p2
+def defiler(F):
+    if est_vide(F[1]):
+        while not est_vide(F[0]):
+            empiler(F[1], depiler (F[0]))
+    return depiler(F[1])
 
 
-print (main([1,2,3,4,5],[6,7,8,9,10]))
 
+F= creer_file_vide()
+enfiler(F,1)
+enfiler(F,2)
+enfiler(F,3)
+enfiler(F,4)
+print(F)
+defiler(F)
+print(F)
 
 
