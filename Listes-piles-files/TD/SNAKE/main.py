@@ -1,127 +1,182 @@
 import pygame, time, random
 
 
-# Variable #
-
+# Fenetre
 dimensions = largeur, hauteur = 900, 600
 couleur_fond = 0, 0, 0
+
+# couleur du serpent et de la pomme
 couleur_snake = 0, 255, 0
 couleur_pomme = 255, 0, 0
-blocsec = 5
-timer = time.time()
+
+# vitesse du serpent
+blocsec = 10
+
+# timer pour fixer la vitesse du serpent
+chrono = time.time()
 clock = pygame.time.Clock()
+
+# variable score
 score = 0
 
-# Pygame #
+# position de la pomme
+pomme_position_x = random.randrange(0, largeur,30)
+pomme_position_y = random.randrange(0, hauteur,30)
 
-pygame.init()
-fenetre = pygame.display.set_mode((dimensions))
-pygame.display.set_caption("Snake by Hugenz")
-pygame.display.flip()
-coordsnake = [[450, 300]]
-coordpomme = [random.randrange(0, largeur, 30), random.randrange(0, hauteur, 30)]
+# position du serpent
+snake_position_y = 300
+snake_position_x = 450
 
-# creation de la direction
+# direction du serpent
 snake_direction_x = 0
 snake_direction_y = 0
 
 
+# creer une liste de coordonnées pour le snake
+position_snake = []
 
+# creer une liste pour la taille du snake
+taille_snake = 1
+
+
+## pygame ##
+# initialisation de pygame
+pygame.init()
+# variable pour la fenetre avec les dimensions
+fenetre = pygame.display.set_mode((dimensions))
+# titre de la fenetre
+pygame.display.set_caption("Snake by Hugenz")
+pygame.display.flip()
+
+
+
+#####################################################################################################
+                                  # BOUCLE PRINCIPALE #
+#####################################################################################################
 
 continuer = True
 while continuer:
 
-    fenetre.fill((40, 100, 40))
+
+    """
+    affichage de la grille
+    """
+    fenetre.fill((55, 148, 8))
     for i in range(30):
         for j in range(30):
-            pygame.draw.rect(fenetre, (70, 130, 70), (i * 30, j * 30, 30, 30), 1)
+            pygame.draw.rect(fenetre, (109, 148, 3), (i * 30, j * 30, 30, 30), 1)
 
+    """
+    si l'utilisateur ferme la fenetre, le jeu s'arrete
+    """
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             continuer = False
 
 
+    # creation des evenements pour pour bouger le serpent avec les touches directionnelles
 
-    # recoloration de l'ecran
-    # fenetre.fill(couleur_fond)
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_UP:
+            # lorsque l'on presse la touche UP, le serpent se deplace vers le haut
+            snake_direction_y = -1
+            snake_direction_x = 0
+        if event.key == pygame.K_DOWN:
+            # lorsque l'on presse la touche DOWN, le serpent se deplace vers le bas
+            snake_direction_y = 1
+            snake_direction_x = 0
+        if event.key == pygame.K_LEFT:
+            # lorsque l'on presse la touche LEFT, le serpent se deplace vers la gauche
+            snake_direction_x = -1
+            snake_direction_y = 0
+        if event.key == pygame.K_RIGHT:
+            # lorsque l'on presse la touche RIGHT, le serpent se deplace vers la droite
+            snake_direction_x = 1
+            snake_direction_y = 0
 
-    # creation tete du snake
-    pygame.draw.rect(fenetre, couleur_snake, (coordsnake[0][0], coordsnake[0][1], 30, 30))
+
+    # lorsque le serpent depasse les limites de la fenetre, le jeu s'arrete
+    if snake_position_x < 0:
+        continuer = False
+    if snake_position_x > largeur:
+        continuer = False
+    if snake_position_y < 0:
+        continuer = False
+    if snake_position_y > hauteur:
+        continuer = False
 
 
-    # deplacement du snake dans la fenetre
 
-    if coordsnake[0][0] < 0:
-        coordsnake[0][0] = largeur
-    if coordsnake[0][0] > largeur:
-        coordsnake[0][0] = 0
-    if coordsnake[0][1] < 0:
-        coordsnake[0][1] = hauteur
-    if coordsnake[0][1] > hauteur:
-        coordsnake[0][1] = 0
 
-    # affichage de la pomme
+    # faire bouger le serpent
+    if time.time() - chrono >= 1 / blocsec:
+        snake_position_x += snake_direction_x * 30 # 30 = taille du bloc
+        snake_position_y += snake_direction_y * 30
+        timer = time.time()
 
-    pygame.draw.rect(fenetre, couleur_pomme, (coordpomme[0], coordpomme[1], 30, 30))
 
-    # lorque le snake mange une pomme il grandit de 1 bloc et une nouvelle pomme apparait
 
-    if coordsnake[0][0] == coordpomme[0] and coordsnake[0][1] == coordpomme[1]:
-        coordpomme = [random.randrange(0, largeur, 30), random.randrange(0, hauteur, 30)]
-        coordsnake.append([coordsnake[-1][0], coordsnake[-1][1]+30])
+    # lorsque le serpent mange la pomme, il grandit et la pomme apparait a un autre endroit
+
+    if snake_position_x == pomme_position_x and snake_position_y == pomme_position_y:
+        pomme_position_x = random.randrange(0, largeur, 30)
+        pomme_position_y = random.randrange(0, hauteur, 30)
+        taille_snake += 1
         score += 1
         print(score)
-        print (coordsnake)
-
-    # afficher la liste des coordonnées du snake
-
-    for i in range(1, len(coordsnake)):
-        coordsnake[i][0] = coordsnake[i-1][0]
-        coordsnake[i][1] = coordsnake[i-1][1]
-        pygame.draw.rect(fenetre, couleur_snake, (coordsnake[i][0], coordsnake[i][1], 30, 30))
 
 
+    # on cree une liste de coordonnees pour le serpent
+    snake_head = []
+    snake_head.append(snake_position_x)
+    snake_head.append(snake_position_y)
 
+    # on ajoute les coordonnees du serpent a la liste
+    position_snake.append(snake_head)
 
+    # on limite la taille de la liste
+    if len(position_snake) > taille_snake:
+        del position_snake[0]
+
+    # on dessine le serpent
+    for x in position_snake:
+        pygame.draw.rect(fenetre, couleur_snake, (x[0], x[1], 30, 30))
+
+    # on dessine la pomme
+    pygame.draw.rect(fenetre, couleur_pomme, (pomme_position_x, pomme_position_y, 30, 30))
 
 
     # affichage du score
-
     font = pygame.font.SysFont("comicsansms", 30)
     text = font.render("Score: " + str(score), True, (255, 255, 255))
     fenetre.blit(text, (0, 0))
 
 
-    # deplacement du snake avec les fleches
-
-
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:
-            snake_direction_x = -1
-            snake_direction_y = 0
-        elif event.key == pygame.K_RIGHT:
-            snake_direction_x = 1
-            snake_direction_y = 0
-        elif event.key == pygame.K_UP:
-            snake_direction_x = 0
-            snake_direction_y = -1
-        elif event.key == pygame.K_DOWN:
-            snake_direction_x = 0
-            snake_direction_y = 1
-
-    if time.time() - timer >= 1 / blocsec:
-        coordsnake[0][0] += snake_direction_x * 30
-        coordsnake[0][1] += snake_direction_y * 30
-        timer = time.time()
+    # si le serpent se mord la queue, le jeu s'arrete
+    for x in position_snake[:-1]:
+        if x == snake_head:
+            text = font.render("GAME OVER", True, (255, 255, 255))
+            fenetre.blit(text, (largeur / 2 - 100, hauteur / 2 - 100))
+            text = font.render("Score: " + str(score), True, (255, 255, 255))
+            fenetre.blit(text, (largeur / 2 - 100, hauteur / 2 - 50))
+            # on attend 2 secondes avant de fermer la fenetre
+            time.sleep(2)
+            continuer = False
 
 
 
-    # ralentir le snake
 
-    clock.tick(50)
 
+    # on met a jour l'ecran
     pygame.display.flip()
 
+    # on limite la vitesse du serpent car sinon il va trop vite
+    clock.tick(10)
+
+
+
+
+# on quitte pygame
 pygame.quit()
 
 
