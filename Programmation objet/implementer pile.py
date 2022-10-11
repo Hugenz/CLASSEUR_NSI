@@ -30,7 +30,7 @@ class Pile:
     def __str__(self):
         return str(self.dernier)
 
-    # ----------- TEST
+
 
 p = Pile()
 p.ajoute(31)
