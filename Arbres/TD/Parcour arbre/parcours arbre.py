@@ -107,9 +107,6 @@ def arbre_recherche(Noeud, valeur):
     return arbre_recherche(Noeud.gauche, valeur) or arbre_recherche(Noeud.droit, valeur) # on retourne vrai si la valeur est dans le noeud gauche ou dans le noeud droit
 
 
-
-
-
 """ Création d'un arbre binaire de recherche """
 racine = Noeud(10)
 ArbreInserer(racine,3)
